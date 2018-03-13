@@ -12,12 +12,12 @@ class RuboCopMethodOrderTest < Minitest::Test
   end
 
   def test_good_model
-    investigate(@cop, fixture_file('valid_full_class.rb'))
+    investigate(@cop, fixture_file('good_full_class.rb'))
     assert_empty @cop.offenses.map(&:message)
   end
 
   def test_method_before_initialize
-    investigate(@cop, fixture_file('invalid_method_before_initialize.rb'))
+    investigate(@cop, fixture_file('bad_method_before_initialize.rb'))
 
     assert_equal 2, @cop.offenses.count
     assert_equal \
@@ -29,7 +29,7 @@ class RuboCopMethodOrderTest < Minitest::Test
   end
 
   def test_bad_method_order
-    investigate(@cop, fixture_file('invalid_public_method_order.rb'))
+    investigate(@cop, fixture_file('bad_public_method_order.rb'))
 
     assert_equal 2, @cop.offenses.count
     assert_equal \
