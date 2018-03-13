@@ -12,7 +12,6 @@ module RuboCop
       class MethodOrder < Cop
         MSG = 'Method `%<method>s` should come %<direction>s the method' \
           ' `%<other_method>s`.'
-        VERSION = '0.1.0'
 
         def on_begin(node)
           return unless node.parent&.type == :class
