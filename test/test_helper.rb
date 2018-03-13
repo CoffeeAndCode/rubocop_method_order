@@ -1,4 +1,6 @@
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
-require_relative "support/rubocop_helpers"
-require "rubocop/cop/style/method_order"
-require "minitest/autorun"
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+require 'rubocop_method_order'
+require 'minitest/autorun'
+require_relative 'support/rubocop_helpers'

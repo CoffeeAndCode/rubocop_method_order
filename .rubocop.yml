@@ -1,2 +1,8 @@
 AllCops:
+  Exclude:
+    - test/fixtures/files/**/*
   TargetRubyVersion: 2.3
+
+Style/MethodOrder:
+  Exclude:
+    - test/**/*_test.rb
