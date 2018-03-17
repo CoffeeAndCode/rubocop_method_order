@@ -22,24 +22,25 @@ module RuboCop
 
         private
 
-        def check_node(public_methods, node)
-          method_index = public_methods.methods.index(node.method_name)
-          expected_method_index = public_methods.ordered_methods.index(node.method_name)
-          return if expected_method_index == method_index
+        def check_node(collection, node)
+          return if collection.method_order_correct?(node.method_name)
 
-          direction = 'before'
-          other_method = public_methods.ordered_methods[expected_method_index + 1]
+          method_index = collection.methods.index(node.method_name)
+          expected_method_index = collection.expected_method_index(node.method_name)
 
           if expected_method_index > method_index
-            direction = 'after'
-            other_method = public_methods.ordered_methods[expected_method_index - 1]
+            add_offense(node, location: :expression, message: message(
+              node.method_name,
+              collection.previous_method_name(node.method_name),
+              'after'
+            ))
+          else
+            add_offense(node, location: :expression, message: message(
+              node.method_name,
+              collection.next_method_name(node.method_name),
+              'before'
+            ))
           end
-
-          add_offense(node, location: :expression, message: message(
-            node.method_name,
-            other_method,
-            direction
-          ))
         end
 
         def enabled_at_line?(node)
@@ -47,7 +48,10 @@ module RuboCop
         end
 
         def message(method_name, following_method_name, direction)
-          format(MSG, direction: direction, method: method_name, other_method: following_method_name)
+          format(MSG,
+                 direction: direction,
+                 method: method_name,
+                 other_method: following_method_name)
         end
 
         def process_methods(nodes)
@@ -66,7 +70,7 @@ module RuboCop
               memo[:class] << obj if enabled_at_line?(obj)
             end
 
-            mode = obj.method_name if obj.type == :send && %i[private protected].include?(obj.method_name)
+            mode = obj.method_name if scope_change_node?(obj)
           end
 
           class_method_nodes = method_groups[:class] || []
@@ -84,6 +88,10 @@ module RuboCop
           protected_method_nodes = method_groups[:protected] || []
           protected_method_nodes.each { |def_node| protected_methods.push(def_node.method_name) }
           protected_method_nodes.each { |def_node| check_node(protected_methods, def_node) }
+        end
+
+        def scope_change_node?(node)
+          node.type == :send && %i[private protected].include?(node.method_name)
         end
       end
     end

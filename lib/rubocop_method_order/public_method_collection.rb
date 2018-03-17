@@ -2,26 +2,23 @@
 
 module RuboCopMethodOrder
   # Hold collection of public instance methods that has custom sorted order.
-  class PublicMethodCollection
-    attr_reader :methods
-
+  class PublicMethodCollection < MethodCollection
     def initialize
       @initialize_found = false
-      @methods = []
+      super
     end
 
     def ordered_methods
       if @initialize_found
         [:initialize] + (@methods - [:initialize]).sort
       else
-        @methods.sort
+        super
       end
     end
 
     def push(method_name)
       @initialize_found = true if method_name == :initialize
-      @methods << method_name
-      self
+      super
     end
   end
 end

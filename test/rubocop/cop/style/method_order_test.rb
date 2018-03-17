@@ -50,6 +50,7 @@ class RuboCopMethodOrderTest < Minitest::Test
     assert_equal 0, @cop.offenses.count
   end
 
+  # rubocop:disable Metrics/LineLength
   def test_bad_module_method_order
     investigate(@cop, fixture_file('bad_module_method_order.rb'))
 
@@ -63,4 +64,5 @@ class RuboCopMethodOrderTest < Minitest::Test
       'Method `another_private_method` should come before the method `private_method`.'
     ], @cop.offenses.map(&:message)
   end
+  # rubocop:enable Metrics/LineLength
 end
