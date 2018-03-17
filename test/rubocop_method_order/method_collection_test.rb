@@ -80,7 +80,7 @@ module RuboCopMethodOrder
       collection.push(:method_name)
       collection.push(:another_method)
 
-      assert_equal :another_method_name,
+      assert_equal :another_method,
                    collection.previous_method_name(:method_name)
     end
 

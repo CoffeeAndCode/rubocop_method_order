@@ -19,10 +19,10 @@ module RuboCopMethodOrder
     def test_has_ability_to_return_methods_in_order
       collection = PublicMethodCollection.new
       collection.push(:method_name)
-      collection.push(:another_method_name)
+      collection.push(:another_method)
 
       assert_equal %i[
-        another_method_name
+        another_method
         method_name
       ], collection.ordered_methods
     end
