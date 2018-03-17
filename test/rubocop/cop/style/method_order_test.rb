@@ -39,4 +39,24 @@ class RuboCopMethodOrderTest < Minitest::Test
       'Method `apple` should come before the method `hello`.',
       @cop.offenses.last.message
   end
+
+  def test_good_methods_with_comments
+    investigate(@cop, fixture_file('good_methods_with_comments.rb'))
+    assert_equal 0, @cop.offenses.count
+  end
+
+  def test_good_module
+    investigate(@cop, fixture_file('good_module.rb'))
+    assert_equal 0, @cop.offenses.count
+  end
+
+  def test_bad_module_method_order
+    investigate(@cop, fixture_file('bad_module_method_order.rb'))
+
+    assert_equal 2, @cop.offenses.count
+    assert_equal [
+      'Method `hello` should come after the method `apple`.',
+      'Method `initialize` should come before the method `apple`.'
+    ], @cop.offenses.map(&:message)
+  end
 end
