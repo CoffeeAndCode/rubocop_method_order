@@ -10,8 +10,16 @@ module RuboCop
       # public methods and that you're using `private` or `protected` to
       # delineate between groupings of methods.
       class MethodOrder < Cop
-        MSG = 'Method `%<method>s` should come %<direction>s the method' \
-          ' `%<other_method>s`.'
+        include RangeHelp
+
+        MSG = 'Method `%<method>s` should come %<direction>s the method `%<other_method>s`.'
+
+        def autocorrect(node)
+          lambda do |corrector|
+            line = range_by_whole_lines(node.source_range)
+            corrector.insert_before(line, "FIX ME!\n")
+          end
+        end
 
         def on_class(node)
           begin_node = node.child_nodes.select { |x| x&.type == :begin }.first

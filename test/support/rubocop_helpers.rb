@@ -9,8 +9,18 @@ module RuboCopHelpers
     IO.read(Pathname.new("#{__dir__}/../fixtures/files/#{filepath}"))
   end
 
-  def investigate(cop, src, filename = nil)
-    source = RuboCop::ProcessedSource.new(src, RUBY_VERSION.to_f, filename)
+  def autocorrect(cop, src)
+    source = RuboCop::ProcessedSource.new(src, RUBY_VERSION.to_f)
+    cop.instance_variable_get(:@options)[:auto_correct] = true
+    investigate(cop, src)
+
+    corrector =
+      RuboCop::Cop::Corrector.new(source.buffer, cop.corrections)
+    corrector.rewrite
+  end
+
+  def investigate(cop, src)
+    source = RuboCop::ProcessedSource.new(src, RUBY_VERSION.to_f)
     commissioner = RuboCop::Cop::Commissioner.new([cop], [], raise_error: true)
     commissioner.investigate(source)
     commissioner

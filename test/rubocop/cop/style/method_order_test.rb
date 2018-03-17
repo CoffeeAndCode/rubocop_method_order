@@ -16,7 +16,7 @@ class RuboCopMethodOrderTest < Minitest::Test
     assert_empty @cop.offenses.map(&:message)
   end
 
-  def test_method_before_initialize
+  def test_bad_method_before_initialize
     investigate(@cop, fixture_file('bad_method_before_initialize.rb'))
 
     assert_equal 2, @cop.offenses.count
@@ -24,6 +24,11 @@ class RuboCopMethodOrderTest < Minitest::Test
                  @cop.offenses.first.message
     assert_equal 'Method `initialize` should come before the method `apple`.',
                  @cop.offenses.last.message
+  end
+
+  def test_autocorrect_bad_method_before_initialize
+    assert_equal fixture_file('bad_method_before_initialize_fixed.rb'),
+      autocorrect(@cop, fixture_file('bad_method_before_initialize.rb'))
   end
 
   def test_bad_method_order
@@ -34,6 +39,11 @@ class RuboCopMethodOrderTest < Minitest::Test
                  @cop.offenses.first.message
     assert_equal 'Method `apple` should come before the method `hello`.',
                  @cop.offenses.last.message
+  end
+
+  def test_autocorrect_bad_public_method_order
+    assert_equal fixture_file('bad_public_method_order_fixed.rb'),
+      autocorrect(@cop, fixture_file('bad_public_method_order.rb'))
   end
 
   def test_good_methods_with_comments
@@ -58,5 +68,10 @@ class RuboCopMethodOrderTest < Minitest::Test
       'Method `private_method` should come after the method `another_private_method`.',
       'Method `another_private_method` should come before the method `private_method`.'
     ], @cop.offenses.map(&:message)
+  end
+
+  def test_autocorrect_bad_module_method_order
+    assert_equal fixture_file('bad_module_method_order_fixed.rb'),
+      autocorrect(@cop, fixture_file('bad_module_method_order.rb'))
   end
 end
