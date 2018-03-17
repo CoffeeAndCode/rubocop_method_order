@@ -18,7 +18,7 @@ module RuboCop
           nodes = begin_node.nil? ? node.child_nodes : begin_node.child_nodes
           process_methods(nodes)
         end
-        alias_method :on_module, :on_class
+        alias on_module on_class
 
         private
 
