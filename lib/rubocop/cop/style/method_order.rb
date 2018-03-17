@@ -26,9 +26,9 @@ module RuboCop
           return if collection.method_order_correct?(node.method_name)
 
           method_index = collection.methods.index(node.method_name)
-          expected_method_index = collection.expected_method_index(node.method_name)
+          expected_index = collection.expected_method_index(node.method_name)
 
-          if expected_method_index > method_index
+          if expected_index > method_index
             add_offense(node, location: :expression, message: message(
               node.method_name,
               collection.previous_method_name(node.method_name),

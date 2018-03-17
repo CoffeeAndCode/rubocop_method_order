@@ -20,24 +20,20 @@ class RuboCopMethodOrderTest < Minitest::Test
     investigate(@cop, fixture_file('bad_method_before_initialize.rb'))
 
     assert_equal 2, @cop.offenses.count
-    assert_equal \
-      'Method `apple` should come after the method `initialize`.',
-      @cop.offenses.first.message
-    assert_equal \
-      'Method `initialize` should come before the method `apple`.',
-      @cop.offenses.last.message
+    assert_equal 'Method `apple` should come after the method `initialize`.',
+                 @cop.offenses.first.message
+    assert_equal 'Method `initialize` should come before the method `apple`.',
+                 @cop.offenses.last.message
   end
 
   def test_bad_method_order
     investigate(@cop, fixture_file('bad_public_method_order.rb'))
 
     assert_equal 2, @cop.offenses.count
-    assert_equal \
-      'Method `hello` should come after the method `apple`.',
-      @cop.offenses.first.message
-    assert_equal \
-      'Method `apple` should come before the method `hello`.',
-      @cop.offenses.last.message
+    assert_equal 'Method `hello` should come after the method `apple`.',
+                 @cop.offenses.first.message
+    assert_equal 'Method `apple` should come before the method `hello`.',
+                 @cop.offenses.last.message
   end
 
   def test_good_methods_with_comments
@@ -50,7 +46,6 @@ class RuboCopMethodOrderTest < Minitest::Test
     assert_equal 0, @cop.offenses.count
   end
 
-  # rubocop:disable Metrics/LineLength
   def test_bad_module_method_order
     investigate(@cop, fixture_file('bad_module_method_order.rb'))
 
@@ -64,5 +59,4 @@ class RuboCopMethodOrderTest < Minitest::Test
       'Method `another_private_method` should come before the method `private_method`.'
     ], @cop.offenses.map(&:message)
   end
-  # rubocop:enable Metrics/LineLength
 end

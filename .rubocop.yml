@@ -3,6 +3,8 @@ AllCops:
     - test/fixtures/files/**/*
   TargetRubyVersion: 2.3
 
+Metrics/LineLength:
+  Max: 100
 Style/MethodOrder:
   Exclude:
     - test/**/*_test.rb
