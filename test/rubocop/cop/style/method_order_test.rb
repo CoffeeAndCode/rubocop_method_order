@@ -53,10 +53,14 @@ class RuboCopMethodOrderTest < Minitest::Test
   def test_bad_module_method_order
     investigate(@cop, fixture_file('bad_module_method_order.rb'))
 
-    assert_equal 2, @cop.offenses.count
+    assert_equal 6, @cop.offenses.count
     assert_equal [
+      'Method `where` should come after the method `find`.',
+      'Method `find` should come before the method `where`.',
       'Method `hello` should come after the method `apple`.',
-      'Method `initialize` should come before the method `apple`.'
+      'Method `initialize` should come before the method `apple`.',
+      'Method `private_method` should come after the method `another_private_method`.',
+      'Method `another_private_method` should come before the method `private_method`.'
     ], @cop.offenses.map(&:message)
   end
 end
