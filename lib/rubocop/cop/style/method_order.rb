@@ -111,19 +111,19 @@ module RuboCop
         #   end
         # end
 
-        def investigate(processed_source)
+        def investigate(_processed_source)
           @method_collector = RuboCopMethodOrder::MethodCollector.new(
-            cop: self,
-            processed_source: processed_source
+            should_skip_method: ->(node) { !cop_enabled_for_node?(node) }
           )
+          @offenses_checked = false
         end
 
         # NOTE: Change this if cops get a callback method for running validations
         #       after the on_* methods have been executed.
         def offenses(*args)
-          unless defined?(@offenses_checked)
-            check_nodes
+          unless @offenses_checked
             @offenses_checked = true
+            check_nodes
           end
 
           super(*args)
@@ -154,6 +154,10 @@ module RuboCop
               ))
             end
           end
+        end
+
+        def cop_enabled_for_node?(node)
+          processed_source.comment_config.cop_enabled_at_line?(self, node.first_line)
         end
 
         def message(method_name, following_method_name, direction)

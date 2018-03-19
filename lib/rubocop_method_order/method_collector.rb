@@ -9,15 +9,14 @@ module RuboCopMethodOrder
     attr_reader :all_method_nodes,
                 :nodes_by_scope
 
-    def initialize(cop:, processed_source:)
+    def initialize(should_skip_method:)
       @all_method_nodes = []
-      @cop = cop
+      @should_skip_method = should_skip_method
       @nodes_by_scope = {}
-      @processed_source = processed_source
     end
 
     def collect(def_node, scope_name = 'global')
-      return unless enabled_at_line?(def_node)
+      return if @should_skip_method.call(def_node)
       return if @all_method_nodes.include?(def_node)
 
       @all_method_nodes << def_node
@@ -60,10 +59,6 @@ module RuboCopMethodOrder
     def child_nodes_from_container(node)
       begin_node = node.child_nodes.select { |x| x&.type == :begin }.first
       begin_node.nil? ? node.child_nodes : begin_node.child_nodes
-    end
-
-    def enabled_at_line?(node)
-      @processed_source.comment_config.cop_enabled_at_line?(@cop, node.first_line)
     end
 
     def new_node_collection(scope_name)
