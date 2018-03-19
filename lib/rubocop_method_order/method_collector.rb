@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative './method_node_collection'
+require_relative './public_method_node_collection'
+
 module RuboCopMethodOrder
   # This object collects every method definition found during a cop run and will
   # attempt to split them by scope and context. If a method is disabled by a

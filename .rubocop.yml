@@ -1,3 +1,6 @@
+require:
+  - ./lib/rubocop/cop/style/method_order
+
 AllCops:
   Exclude:
     - test/fixtures/files/**/*

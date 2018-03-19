@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rubocop'
+require_relative '../../../rubocop_method_order/method_collector'
 
 module RuboCop
   module Cop
@@ -133,14 +134,14 @@ module RuboCop
           @method_collector.collect_nodes_from_class(node)
         end
 
-        def on_module(node)
-          @method_collector.collect_nodes_from_module(node)
-        end
-
         def on_def(node)
           @method_collector.collect(node)
         end
         alias on_defs on_def
+
+        def on_module(node)
+          @method_collector.collect_nodes_from_module(node)
+        end
 
         private
 
