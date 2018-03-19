@@ -5,6 +5,9 @@ AllCops:
 
 Metrics/LineLength:
   Max: 100
+Metrics/MethodLength:
+  Exclude:
+    - test/**/*_test.rb
 Style/MethodOrder:
   Exclude:
     - test/**/*_test.rb
