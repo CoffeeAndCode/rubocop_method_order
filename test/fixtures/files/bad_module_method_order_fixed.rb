@@ -15,12 +15,4 @@ module CustomModule
 
   def hello
   end
-
-  private
-
-  def another_private_method
-  end
-
-  def private_method
-  end
 end

@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - test/fixtures/files/**/*
   TargetRubyVersion: 2.3
+  UseCache: false
 
 Metrics/LineLength:
   Max: 100

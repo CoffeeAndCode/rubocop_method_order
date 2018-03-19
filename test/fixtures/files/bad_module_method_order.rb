@@ -15,12 +15,4 @@ module CustomModule
 
   def initialize
   end
-
-  private
-
-  def private_method
-  end
-
-  def another_private_method
-  end
 end
