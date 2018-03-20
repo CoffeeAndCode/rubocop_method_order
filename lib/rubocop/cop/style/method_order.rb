@@ -107,8 +107,8 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            source_range = range_by_whole_lines_including_method_comments(node)
-            replace_range = range_by_whole_lines_including_method_comments(@autocorrect_replacements[node])
+            source_range = range_with_method_comments(node)
+            replace_range = range_with_method_comments(@autocorrect_replacements[node])
             corrector.replace(replace_range, source_range.source)
           end
         end
@@ -147,6 +147,21 @@ module RuboCop
 
         private
 
+        def begin_pos_with_comments(node)
+          range = node.source_range
+          begin_of_first_line = range.begin_pos - range.column
+          line_number = range.first_line
+
+          loop do
+            line_number -= 1
+            source_line = @processed_source.buffer.source_line(line_number)
+            break unless source_line.match?(/\s*#/)
+
+            begin_of_first_line -= source_line.length + 1 # account for \n char
+          end
+          begin_of_first_line
+        end
+
         def check_nodes
           @method_collector.nodes_by_scope.values.each do |method_collection|
             @autocorrect_replacements.merge!(method_collection.replacements)
@@ -164,6 +179,12 @@ module RuboCop
           processed_source.comment_config.cop_enabled_at_line?(self, node.first_line)
         end
 
+        def end_pos_with_comments(node)
+          range = node.source_range
+          last_line = @processed_source.buffer.source_line(range.last_line)
+          range.end_pos + last_line.length - range.last_column + 1 # account for \n char
+        end
+
         def message(method_name, following_method_name, direction)
           format(MSG,
                  direction: direction,
@@ -171,30 +192,10 @@ module RuboCop
                  other_method: following_method_name)
         end
 
-        def range_by_whole_lines_including_method_comments(node)
-          range = node.source_range
-          buffer = @processed_source.buffer
-
-          begin_pos = range.begin_pos
-          begin_offset = range.column
-          begin_of_first_line = begin_pos - begin_offset
-
-          line_number = range.first_line
-          loop do
-            line_number -= 1
-            source_line = buffer.source_line(line_number)
-            break unless source_line.match?(/\s*#/)
-
-            begin_of_first_line -= source_line.length + 1
-          end
-
-          last_line = buffer.source_line(range.last_line)
-          end_pos = range.end_pos
-          end_offset = last_line.length - range.last_column
-          end_offset += 1
-          end_of_last_line = end_pos + end_offset
-
-          Parser::Source::Range.new(buffer, begin_of_first_line, end_of_last_line)
+        def range_with_method_comments(node)
+          Parser::Source::Range.new(@processed_source.buffer,
+                                    begin_pos_with_comments(node),
+                                    end_pos_with_comments(node))
         end
       end
     end

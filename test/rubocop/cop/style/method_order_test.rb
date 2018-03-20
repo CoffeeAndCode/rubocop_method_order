@@ -33,7 +33,7 @@ class RuboCopMethodOrderTest < Minitest::Test
 
   def test_autocorrect_bad_method_before_initialize
     assert_equal fixture_file('bad_method_before_initialize_fixed.rb'),
-      autocorrect(@cop, fixture_file('bad_method_before_initialize.rb'))
+                 autocorrect(@cop, fixture_file('bad_method_before_initialize.rb'))
   end
 
   def test_bad_method_order
@@ -48,7 +48,7 @@ class RuboCopMethodOrderTest < Minitest::Test
 
   def test_autocorrect_bad_public_method_order
     assert_equal fixture_file('bad_public_method_order_fixed.rb'),
-      autocorrect(@cop, fixture_file('bad_public_method_order.rb'))
+                 autocorrect(@cop, fixture_file('bad_public_method_order.rb'))
   end
 
   def test_good_methods_with_comments
@@ -75,7 +75,7 @@ class RuboCopMethodOrderTest < Minitest::Test
 
   def test_autocorrect_bad_module_method_order
     assert_equal fixture_file('bad_module_method_order_fixed.rb'),
-      autocorrect(@cop, fixture_file('bad_module_method_order.rb'))
+                 autocorrect(@cop, fixture_file('bad_module_method_order.rb'))
   end
 
   def test_basic_ruby_file
