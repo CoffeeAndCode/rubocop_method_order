@@ -105,14 +105,16 @@ module RuboCop
 
         MSG = 'Method `%<method>s` should come %<direction>s the method `%<other_method>s`.'
 
-        # def autocorrect(node)
-        #   lambda do |corrector|
-        #     range = range_by_whole_lines_including_method_comments(node.source_range)
-        #     corrector.replace(range, 'FIX ME!')
-        #   end
-        # end
+        def autocorrect(node)
+          lambda do |corrector|
+            source_range = range_by_whole_lines_including_method_comments(node)
+            replace_range = range_by_whole_lines_including_method_comments(@autocorrect_replacements[node])
+            corrector.replace(replace_range, source_range.source)
+          end
+        end
 
         def investigate(_processed_source)
+          @autocorrect_replacements = {}
           @method_collector = RuboCopMethodOrder::MethodCollector.new(
             should_skip_method: ->(node) { !cop_enabled_for_node?(node) }
           )
@@ -147,6 +149,7 @@ module RuboCop
 
         def check_nodes
           @method_collector.nodes_by_scope.values.each do |method_collection|
+            @autocorrect_replacements.merge!(method_collection.replacements)
             method_collection.offenses.each do |offense|
               add_offense(offense[:node], location: :expression, message: message(
                 offense[:node].method_name,
@@ -168,31 +171,31 @@ module RuboCop
                  other_method: following_method_name)
         end
 
-        # Coming soon...
-        # def range_by_whole_lines_including_method_comments(range)
-        #   buffer = @processed_source.buffer
+        def range_by_whole_lines_including_method_comments(node)
+          range = node.source_range
+          buffer = @processed_source.buffer
 
-        #   begin_pos = range.begin_pos
-        #   begin_offset = range.column
-        #   begin_of_first_line = begin_pos - begin_offset
+          begin_pos = range.begin_pos
+          begin_offset = range.column
+          begin_of_first_line = begin_pos - begin_offset
 
-        #   line_number = range.first_line
-        #   loop do
-        #     line_number -= 1
-        #     source_line = buffer.source_line(line_number)
-        #     break unless source_line.match?(/\s+#/)
+          line_number = range.first_line
+          loop do
+            line_number -= 1
+            source_line = buffer.source_line(line_number)
+            break unless source_line.match?(/\s*#/)
 
-        #     begin_of_first_line -= source_line.length
-        #   end
+            begin_of_first_line -= source_line.length + 1
+          end
 
-        #   last_line = buffer.source_line(range.last_line)
-        #   end_pos = range.end_pos
-        #   end_offset = last_line.length - range.last_column
-        #   end_offset += 1
-        #   end_of_last_line = end_pos + end_offset
+          last_line = buffer.source_line(range.last_line)
+          end_pos = range.end_pos
+          end_offset = last_line.length - range.last_column
+          end_offset += 1
+          end_of_last_line = end_pos + end_offset
 
-        #   Parser::Source::Range.new(buffer, begin_of_first_line, end_of_last_line)
-        # end
+          Parser::Source::Range.new(buffer, begin_of_first_line, end_of_last_line)
+        end
       end
     end
   end

@@ -50,5 +50,34 @@ module RuboCopMethodOrder
         }
       ], collection.offenses
     end
+
+    def test_will_return_replacements_used_for_autocorrect
+      collection = MethodNodeCollection.new
+
+      apple = OpenStruct.new(method_name: :apple)
+      bear = OpenStruct.new(method_name: :bear)
+      cat = OpenStruct.new(method_name: :cat)
+      collection.push(bear)
+      collection.push(apple)
+      collection.push(cat)
+
+      expected = {}
+      expected[apple] = bear
+      expected[bear] = apple
+      assert_equal expected, collection.replacements
+    end
+
+    def test_will_return_no_replacements_if_order_is_correct
+      collection = MethodNodeCollection.new
+
+      apple = OpenStruct.new(method_name: :apple)
+      bear = OpenStruct.new(method_name: :bear)
+      cat = OpenStruct.new(method_name: :cat)
+      collection.push(apple)
+      collection.push(bear)
+      collection.push(cat)
+
+      assert_equal({}, collection.replacements)
+    end
   end
 end

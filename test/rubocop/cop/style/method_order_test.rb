@@ -31,10 +31,10 @@ class RuboCopMethodOrderTest < Minitest::Test
                  @cop.offenses.last.message
   end
 
-  # def test_autocorrect_bad_method_before_initialize
-  #   assert_equal fixture_file('bad_method_before_initialize_fixed.rb'),
-  #     autocorrect(@cop, fixture_file('bad_method_before_initialize.rb'))
-  # end
+  def test_autocorrect_bad_method_before_initialize
+    assert_equal fixture_file('bad_method_before_initialize_fixed.rb'),
+      autocorrect(@cop, fixture_file('bad_method_before_initialize.rb'))
+  end
 
   def test_bad_method_order
     investigate(@cop, fixture_file('bad_public_method_order.rb'))
@@ -46,10 +46,10 @@ class RuboCopMethodOrderTest < Minitest::Test
                  @cop.offenses.last.message
   end
 
-  # def test_autocorrect_bad_public_method_order
-  #   assert_equal fixture_file('bad_public_method_order_fixed.rb'),
-  #     autocorrect(@cop, fixture_file('bad_public_method_order.rb'))
-  # end
+  def test_autocorrect_bad_public_method_order
+    assert_equal fixture_file('bad_public_method_order_fixed.rb'),
+      autocorrect(@cop, fixture_file('bad_public_method_order.rb'))
+  end
 
   def test_good_methods_with_comments
     investigate(@cop, fixture_file('good_methods_with_comments.rb'))
@@ -73,10 +73,10 @@ class RuboCopMethodOrderTest < Minitest::Test
     ], @cop.offenses.map(&:message)
   end
 
-  # def test_autocorrect_bad_module_method_order
-  #   assert_equal fixture_file('bad_module_method_order_fixed.rb'),
-  #     autocorrect(@cop, fixture_file('bad_module_method_order.rb'))
-  # end
+  def test_autocorrect_bad_module_method_order
+    assert_equal fixture_file('bad_module_method_order_fixed.rb'),
+      autocorrect(@cop, fixture_file('bad_module_method_order.rb'))
+  end
 
   def test_basic_ruby_file
     investigate(@cop, fixture_file('good_basic_ruby_file.rb'))
@@ -94,8 +94,8 @@ class RuboCopMethodOrderTest < Minitest::Test
     ], @cop.offenses.map(&:message)
   end
 
-  # def test_autocorrect_bad_basic_ruby_file
-  #   assert_equal fixture_file('bad_basic_ruby_file_fixed.rb'),
-  #     autocorrect(@cop, fixture_file('bad_basic_ruby_file.rb'))
-  # end
+  def test_autocorrect_bad_basic_ruby_file
+    assert_equal fixture_file('bad_basic_ruby_file_fixed.rb'),
+                 autocorrect(@cop, fixture_file('bad_basic_ruby_file.rb'))
+  end
 end

@@ -26,6 +26,12 @@ module RuboCopMethodOrder
       self
     end
 
+    def replacements
+      nodes.reject { |node| method_order_correct?(node) }.each_with_object({}) do |node, obj|
+        obj[node] = nodes[expected_method_index(node)]
+      end
+    end
+
     private
 
     def expected_method_index(method_node)
