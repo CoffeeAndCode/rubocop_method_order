@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
                  ' to be listed alphabetically by permission group (public,' \
                  ' private, protected).'
   spec.homepage = 'https://github.com/CoffeeAndCode/rubocop_method_order'
+  spec.metadata = { 'source_code_uri' => 'https://github.com/CoffeeAndCode/rubocop_method_order' }
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
