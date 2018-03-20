@@ -54,7 +54,7 @@ require:
 ## Usage
 
 Here are a few desirable, already ordered examples and you can find more
-examples in the [test/fixtures/](test/fixtures/) directory of this project.
+examples in the [test/fixtures/files/](test/fixtures/files/) directory of this project.
 
 ```ruby
 # In this example, `foo` should be listed after `bar` with both after the
