@@ -8,23 +8,27 @@ require 'rubocop_method_order'
 Gem::Specification.new do |spec|
   spec.name = 'rubocop_method_order'
   spec.version = RuboCopMethodOrder.gem_version
-  spec.licenses = ['MIT']
-  spec.authors = ['Jonathan Knapp']
-  spec.email = ['jon@coffeeandcode.com']
+  spec.license = 'MIT'
+  spec.author = 'Jonathan Knapp'
+  spec.email = 'jon@coffeeandcode.com'
 
-  spec.summary = 'Provide order to your Ruby files by expecting methods' \
-                 ' to be listed alphabetically by permission group (public,' \
-                 ' private, protected).'
+  spec.summary = 'A Rubocop extension that provides order to your Ruby files ' \
+                 'by expecting methods to be listed alphabetically.'
   spec.homepage = 'https://github.com/CoffeeAndCode/rubocop_method_order'
   spec.metadata = { 'source_code_uri' => 'https://github.com/CoffeeAndCode/rubocop_method_order' }
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
+    f.match(%r{^(checksums|test)/})
   end
   spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.3.0'
+  spec.cert_chain = ['certs/coffeeandcode.pem']
+
+  if $PROGRAM_NAME.end_with?('gem')
+    spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
+  end
 
   spec.add_dependency 'rubocop', '~> 0.53'
 

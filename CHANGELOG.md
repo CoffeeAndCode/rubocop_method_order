@@ -7,6 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-* Initial version of plugin.
+* Initial version of the extension.
 
 [unreleased]: https://github.com/CoffeeAndCode/rubocop_method_order
