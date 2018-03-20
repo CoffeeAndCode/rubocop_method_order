@@ -8,10 +8,11 @@ require 'rubocop_method_order'
 Gem::Specification.new do |spec|
   spec.name = 'rubocop_method_order'
   spec.version = RuboCopMethodOrder::VERSION
+  spec.licenses = ['MIT']
   spec.authors = ['Jonathan Knapp']
   spec.email = ['jon@coffeeandcode.com']
 
-  spec.summary = 'Provide order to your Ruby classes by expecting methods' \
+  spec.summary = 'Provide order to your Ruby files by expecting methods' \
                  ' to be listed alphabetically by permission group (public,' \
                  ' private, protected).'
   spec.homepage = 'https://github.com/CoffeeAndCode/rubocop_method_order'
