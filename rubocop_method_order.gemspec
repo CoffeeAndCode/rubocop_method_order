@@ -17,11 +17,11 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/CoffeeAndCode/rubocop_method_order'
   spec.metadata = { 'source_code_uri' => 'https://github.com/CoffeeAndCode/rubocop_method_order' }
 
-  spec.files = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(checksums|test)/})
+  spec.files = `git ls-files -z`.split("\x0").reject do |file|
+    file.match(%r{^(checksums|test)/})
   end
   spec.bindir = 'exe'
-  spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.executables = spec.files.grep(%r{^exe/}) { |file| File.basename(file) }
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.3.0'
   spec.cert_chain = ['certs/coffeeandcode.pem']

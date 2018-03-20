@@ -141,6 +141,9 @@ prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`.
 
+Make sure that the project has no errors when running `bundle exec rake` which
+will run `rubocop` on the project source and `bundle exec rake test`.
+
 To release a new version, update the version number in `lib/rubocop_method_order/version.rb`,
 run `bin/build` and commit the checksum into git, and then run
 `bundle exec rake release`, which will create a git tag for the version, push

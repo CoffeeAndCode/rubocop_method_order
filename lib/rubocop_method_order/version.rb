@@ -12,7 +12,7 @@ module RuboCopMethodOrder
     MAJOR = 0
     MINOR = 1
     PATCH = 0
-    PRE   = 'beta'
+    PRE   = 'beta.2'
 
     STRING = [MAJOR, MINOR, PATCH, PRE].compact.join('.')
   end
