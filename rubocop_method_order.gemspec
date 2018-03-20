@@ -7,7 +7,7 @@ require 'rubocop_method_order'
 
 Gem::Specification.new do |spec|
   spec.name = 'rubocop_method_order'
-  spec.version = RuboCopMethodOrder::VERSION
+  spec.version = RuboCopMethodOrder.gem_version
   spec.licenses = ['MIT']
   spec.authors = ['Jonathan Knapp']
   spec.email = ['jon@coffeeandcode.com']
