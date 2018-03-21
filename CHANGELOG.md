@@ -5,8 +5,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.0] - 2018-03-21
+
 ### Added
 
 * Initial version of the extension.
 
 [unreleased]: https://github.com/CoffeeAndCode/rubocop_method_order
+[0.1.0]: https://github.com/CoffeeAndCode/rubocop_method_order/releases/tag/v0.1.0
