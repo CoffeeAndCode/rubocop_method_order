@@ -15,10 +15,10 @@ module RuboCop
       #
       #   # bad
       #
-      #   # `foo` should be listed after `bar`. Both methods will actually
-      #   # show a linter error with a message indicating if they should show
-      #   # before or after the comparision method. The private methods will
-      #   # also each show errors in relation to each other.
+      #   # `bar` should be listed before `foo`. The method `bar` will show
+      #   # a linter error with a message indicating which method is should show
+      #   # before. The private method `another_method` will also an error
+      #   # saying it should be before `private_method`.
       #   class ExampleClass
       #     def foo
       #     end
@@ -103,18 +103,27 @@ module RuboCop
       class MethodOrder < Cop
         include RangeHelp
 
-        MSG = 'Method `%<method>s` should come %<direction>s the method `%<other_method>s`.'
+        MSG = 'Methods should be sorted in alphabetical order within their section' \
+              ' of the code. Method `%<method>s` should come before `%<previous_method>s`.'
 
         def autocorrect(node)
+          return if @autocorrect_replacements[node].nil?
+
           lambda do |corrector|
-            source_range = range_with_method_comments(node)
-            replace_range = range_with_method_comments(@autocorrect_replacements[node])
-            corrector.replace(replace_range, source_range.source)
+            @autocorrect_replacements[node].each do |node_to_move, node_to_replace|
+              next if @autocorrected_nodes.include?(node_to_move)
+
+              @autocorrected_nodes << node_to_move
+              node_source = range_with_method_comments(node_to_move).source
+              replacement_range = range_with_method_comments(node_to_replace)
+              corrector.replace(replacement_range, node_source)
+            end
           end
         end
 
         def investigate(_processed_source)
           @autocorrect_replacements = {}
+          @autocorrected_nodes = []
           @method_collector = RuboCopMethodOrder::MethodCollector.new(
             should_skip_method: ->(node) { !cop_enabled_for_node?(node) }
           )
@@ -168,8 +177,7 @@ module RuboCop
             method_collection.offenses.each do |offense|
               add_offense(offense[:node], location: :expression, message: message(
                 offense[:node].method_name,
-                offense[:other_node].method_name,
-                offense[:direction]
+                offense[:other_node].method_name
               ))
             end
           end
@@ -185,11 +193,10 @@ module RuboCop
           range.end_pos + last_line.length - range.last_column + 1 # account for \n char
         end
 
-        def message(method_name, following_method_name, direction)
+        def message(method_name, following_method_name)
           format(MSG,
-                 direction: direction,
                  method: method_name,
-                 other_method: following_method_name)
+                 previous_method: following_method_name)
         end
 
         def range_with_method_comments(node)

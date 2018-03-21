@@ -6,6 +6,12 @@ require 'test_helper'
 class RuboCopMethodOrderTest < Minitest::Test
   include RuboCopHelpers
 
+  def error_message(method_name, previous_method_name)
+    format(RuboCop::Cop::Style::MethodOrder::MSG,
+           method: method_name,
+           previous_method: previous_method_name)
+  end
+
   def setup
     config = RuboCop::Config.new
     @cop = RuboCop::Cop::Style::MethodOrder.new(config)
@@ -24,11 +30,9 @@ class RuboCopMethodOrderTest < Minitest::Test
   def test_bad_method_before_initialize
     investigate(@cop, fixture_file('bad_method_before_initialize.rb'))
 
-    assert_equal 2, @cop.offenses.count
-    assert_equal 'Method `apple` should come after the method `initialize`.',
+    assert_equal 1, @cop.offenses.count
+    assert_equal error_message('initialize', 'apple'),
                  @cop.offenses.first.message
-    assert_equal 'Method `initialize` should come before the method `apple`.',
-                 @cop.offenses.last.message
   end
 
   def test_autocorrect_bad_method_before_initialize
@@ -39,11 +43,9 @@ class RuboCopMethodOrderTest < Minitest::Test
   def test_bad_method_order
     investigate(@cop, fixture_file('bad_public_method_order.rb'))
 
-    assert_equal 2, @cop.offenses.count
-    assert_equal 'Method `hello` should come after the method `apple`.',
+    assert_equal 1, @cop.offenses.count
+    assert_equal error_message('apple', 'hello'),
                  @cop.offenses.first.message
-    assert_equal 'Method `apple` should come before the method `hello`.',
-                 @cop.offenses.last.message
   end
 
   def test_autocorrect_bad_public_method_order
@@ -64,12 +66,11 @@ class RuboCopMethodOrderTest < Minitest::Test
   def test_bad_module_method_order
     investigate(@cop, fixture_file('bad_module_method_order.rb'))
 
-    assert_equal 4, @cop.offenses.count
+    assert_equal 3, @cop.offenses.count
     assert_equal [
-      'Method `where` should come after the method `find`.',
-      'Method `find` should come before the method `where`.',
-      'Method `hello` should come after the method `apple`.',
-      'Method `initialize` should come before the method `apple`.'
+      error_message('find', 'where'),
+      error_message('apple', 'hello'),
+      error_message('initialize', 'hello')
     ], @cop.offenses.map(&:message)
   end
 
@@ -86,11 +87,10 @@ class RuboCopMethodOrderTest < Minitest::Test
   def test_bad_basic_ruby_file
     investigate(@cop, fixture_file('bad_basic_ruby_file.rb'))
 
-    assert_equal 3, @cop.offenses.count
+    assert_equal 2, @cop.offenses.count
     assert_equal [
-      'Method `initialize` should come after the method `hello`.',
-      'Method `apple` should come before the method `hello`.',
-      'Method `hello` should come before the method `initialize`.'
+      error_message('apple', 'initialize'),
+      error_message('hello', 'initialize')
     ], @cop.offenses.map(&:message)
   end
 

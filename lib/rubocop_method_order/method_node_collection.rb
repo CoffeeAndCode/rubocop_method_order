@@ -10,13 +10,10 @@ module RuboCopMethodOrder
     end
 
     def offenses
-      nodes.reject { |node| method_order_correct?(node) }.map do |node|
-        is_after = expected_method_index(node) > nodes.index(node)
-
+      nodes.reject { |node| definition_order_correct?(node) }.map do |node|
         {
-          direction: is_after ? 'after' : 'before',
           node: node,
-          other_node: is_after ? previous_method_node(node) : next_method_node(node)
+          other_node: previous_node_from_definition_order(node)
         }
       end
     end
@@ -26,13 +23,24 @@ module RuboCopMethodOrder
       self
     end
 
+    # Build a hash for every node that is not at the correct, final position
+    # which includes any nodes that need to be moved. Used for autocorrecting.
     def replacements
       nodes.reject { |node| method_order_correct?(node) }.each_with_object({}) do |node, obj|
-        obj[node] = nodes[expected_method_index(node)]
+        node_to_replace = nodes[expected_method_index(node)]
+
+        obj[node] = {
+          node => node_to_replace,
+          node_to_replace => nodes[expected_method_index(node_to_replace)]
+        }
       end
     end
 
     private
+
+    def definition_order_correct?(method_node)
+      previous_node_from_definition_order(method_node).nil?
+    end
 
     def expected_method_index(method_node)
       ordered_nodes.index(method_node)
@@ -42,22 +50,17 @@ module RuboCopMethodOrder
       nodes.index(method_node) == ordered_nodes.index(method_node)
     end
 
-    def next_method_node(method_node)
-      expected_index = expected_method_index(method_node)
-      return if expected_index.nil?
-      return if expected_index + 1 >= nodes.size
-      ordered_nodes[expected_index + 1]
-    end
-
     def ordered_nodes
-      nodes.sort_by(&:method_name)
+      nodes.sort(&method(:sort))
     end
 
-    def previous_method_node(method_node)
-      expected_index = expected_method_index(method_node)
-      return if expected_index.nil?
-      return if (expected_index - 1).negative?
-      ordered_nodes[expected_index - 1]
+    def previous_node_from_definition_order(method_node)
+      index = nodes.index(method_node)
+      nodes[0..index].find { |comp_node| sort(comp_node, method_node).positive? }
+    end
+
+    def sort(one, two)
+      one.method_name <=> two.method_name
     end
   end
 end

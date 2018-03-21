@@ -39,12 +39,6 @@ module RuboCopMethodOrder
 
       assert_equal [
         {
-          direction: 'after',
-          node: method_two_node,
-          other_node: method_one_node
-        },
-        {
-          direction: 'before',
           node: method_one_node,
           other_node: method_two_node
         }
@@ -62,8 +56,14 @@ module RuboCopMethodOrder
       collection.push(cat)
 
       expected = {}
-      expected[apple] = bear
-      expected[bear] = apple
+      expected[apple] = {
+        apple => bear,
+        bear => apple
+      }
+      expected[bear] = {
+        bear => apple,
+        apple => bear
+      }
       assert_equal expected, collection.replacements
     end
 

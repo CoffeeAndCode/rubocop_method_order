@@ -43,12 +43,6 @@ module RuboCopMethodOrder
 
       assert_equal [
         {
-          direction: 'after',
-          node: apple_node,
-          other_node: initialize_node
-        },
-        {
-          direction: 'before',
           node: initialize_node,
           other_node: apple_node
         }

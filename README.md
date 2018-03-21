@@ -58,10 +58,10 @@ examples in the [test/fixtures/files/](test/fixtures/files/) directory of this p
 
 ```ruby
 # In this example, `foo` should be listed after `bar` with both after the
-# `initialize` method. If in the incorrect order, both methods will
-# actually show a linter error with a message indicating if they should
-# show 'before' or 'after' a comparision method. The private methods will
-# also each show errors in relation to each other if in the opposite order.
+# `initialize` method. If in the incorrect order, each method that should show
+# up before another will show a linter error indicating which method they should
+# be defined before. The private methods will work the same way in the context
+# of just the private methods.
 class ExampleClass
   def initialize
   end
