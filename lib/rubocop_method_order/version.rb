@@ -10,7 +10,7 @@ module RuboCopMethodOrder
   # Contains individual version parts for this gem.
   module VERSION
     MAJOR = 0
-    MINOR = 1
+    MINOR = 2
     PATCH = 0
     PRE   = nil
 
