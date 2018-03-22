@@ -106,7 +106,9 @@ module RuboCop
         MSG = 'Methods should be sorted in alphabetical order within their section' \
               ' of the code. Method `%<method>s` should come before `%<previous_method>s`.'
 
-        def autocorrect(_node) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity,
+        # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity
+        def autocorrect(_node)
           lambda do |corrector|
             @method_collector.nodes_by_scope.values.each do |method_collection|
               next if @autocorrected_method_collections.include?(method_collection)
@@ -119,12 +121,21 @@ module RuboCop
                   @autocorrected_nodes << node_to_move
                   node_source = range_with_method_comments(node_to_move).source
                   replacement_range = range_with_method_comments(node_to_replace)
-                  corrector.replace(replacement_range, node_source)
+
+                  if node_source.end_with?("\n") && !replacement_range.source.end_with?("\n")
+                    corrector.replace(replacement_range, node_source.chomp("\n"))
+                  elsif !node_source.end_with?("\n") && replacement_range.source.end_with?("\n")
+                    corrector.replace(replacement_range, node_source + "\n")
+                  else
+                    corrector.replace(replacement_range, node_source)
+                  end
                 end
               end
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity,
+        # rubocop:enable Metrics/MethodLength, Metrics/PerceivedComplexity
 
         def investigate(_processed_source)
           @autocorrected_method_collections = []
@@ -191,10 +202,16 @@ module RuboCop
           processed_source.comment_config.cop_enabled_at_line?(self, node.first_line)
         end
 
-        def end_pos_with_comments(node)
+        def end_pos_with_comments(node) # rubocop:disable Metrics/AbcSize
           range = node.source_range
           last_line = @processed_source.buffer.source_line(range.last_line)
-          range.end_pos + last_line.length - range.last_column + 1 # account for \n char
+          end_position = range.end_pos + last_line.length - range.last_column
+
+          if node.source_range.last_line == @processed_source.lines.count
+            end_position
+          else
+            end_position + 1
+          end
         end
 
         def message(method_name, following_method_name)

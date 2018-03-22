@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+* Fix bug when trying to work with last method in file if there is no blank
+  ending line in the file.
+
+### Fixed
+
 * Autocorrect of method order would not replace all incorrectly ordered nodes in
   certain combinations.
 
