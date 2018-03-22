@@ -79,5 +79,48 @@ module RuboCopMethodOrder
 
       assert_equal({}, collection.replacements)
     end
+
+    # rubocop:disable Metrics/AbcSize
+    def test_will_handle_more_complicated_ordering_situations
+      collection = MethodNodeCollection.new
+
+      create = OpenStruct.new(method_name: :create)
+      destroy = OpenStruct.new(method_name: :destroy)
+      edit = OpenStruct.new(method_name: :edit)
+      index = OpenStruct.new(method_name: :index)
+      neue = OpenStruct.new(method_name: :new)
+      update = OpenStruct.new(method_name: :update)
+
+      collection.push(index)
+      collection.push(neue)
+      collection.push(edit)
+      collection.push(create)
+      collection.push(update)
+      collection.push(destroy)
+
+      expected = {}
+      expected[index] = {
+        create => index,
+        index => create
+      }
+      expected[neue] = {
+        neue => update,
+        update => destroy
+      }
+      expected[create] = {
+        create => index,
+        index => create
+      }
+      expected[update] = {
+        destroy => neue,
+        update => destroy
+      }
+      expected[destroy] = {
+        destroy => neue,
+        neue => update
+      }
+      assert_equal(expected, collection.replacements)
+    end
+    # rubocop:enable Metrics/AbcSize
   end
 end

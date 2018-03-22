@@ -106,23 +106,28 @@ module RuboCop
         MSG = 'Methods should be sorted in alphabetical order within their section' \
               ' of the code. Method `%<method>s` should come before `%<previous_method>s`.'
 
-        def autocorrect(node)
-          return if @autocorrect_replacements[node].nil?
-
+        def autocorrect(_node) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
           lambda do |corrector|
-            @autocorrect_replacements[node].each do |node_to_move, node_to_replace|
-              next if @autocorrected_nodes.include?(node_to_move)
+            @method_collector.nodes_by_scope.values.each do |method_collection|
+              next if @autocorrected_method_collections.include?(method_collection)
 
-              @autocorrected_nodes << node_to_move
-              node_source = range_with_method_comments(node_to_move).source
-              replacement_range = range_with_method_comments(node_to_replace)
-              corrector.replace(replacement_range, node_source)
+              @autocorrected_method_collections << method_collection
+              method_collection.replacements.values.each do |replacement_collection|
+                replacement_collection.each do |node_to_move, node_to_replace|
+                  next if @autocorrected_nodes.include?(node_to_move)
+
+                  @autocorrected_nodes << node_to_move
+                  node_source = range_with_method_comments(node_to_move).source
+                  replacement_range = range_with_method_comments(node_to_replace)
+                  corrector.replace(replacement_range, node_source)
+                end
+              end
             end
           end
         end
 
         def investigate(_processed_source)
-          @autocorrect_replacements = {}
+          @autocorrected_method_collections = []
           @autocorrected_nodes = []
           @method_collector = RuboCopMethodOrder::MethodCollector.new(
             should_skip_method: ->(node) { !cop_enabled_for_node?(node) }
@@ -173,7 +178,6 @@ module RuboCop
 
         def check_nodes
           @method_collector.nodes_by_scope.values.each do |method_collection|
-            @autocorrect_replacements.merge!(method_collection.replacements)
             method_collection.offenses.each do |offense|
               add_offense(offense[:node], location: :expression, message: message(
                 offense[:node].method_name,

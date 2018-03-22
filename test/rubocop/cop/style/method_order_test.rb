@@ -98,4 +98,9 @@ class RuboCopMethodOrderTest < Minitest::Test
     assert_equal fixture_file('bad_basic_ruby_file_fixed.rb'),
                  autocorrect(@cop, fixture_file('bad_basic_ruby_file.rb'))
   end
+
+  def test_autocorrect_bad_class_with_method_content
+    assert_equal fixture_file('bad_class_with_method_content_fixed.rb'),
+                 autocorrect(@cop, fixture_file('bad_class_with_method_content.rb'))
+  end
 end
