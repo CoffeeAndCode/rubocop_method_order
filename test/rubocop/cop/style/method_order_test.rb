@@ -108,4 +108,9 @@ class RuboCopMethodOrderTest < Minitest::Test
     assert_equal fixture_file('bad_ruby_file_without_newline_fixed.rb'),
                  autocorrect(@cop, fixture_file('bad_ruby_file_without_newline.rb'))
   end
+
+  def test_autocorrect_bad_trailing_comments
+    assert_equal fixture_file('bad_trailing_comments_fixed.rb'),
+                 autocorrect(@cop, fixture_file('bad_trailing_comments.rb'))
+  end
 end

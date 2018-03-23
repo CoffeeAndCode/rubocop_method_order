@@ -100,7 +100,7 @@ module RuboCop
       #
       #   def foo
       #   end
-      class MethodOrder < Cop
+      class MethodOrder < Cop # rubocop:disable Metrics/ClassLength
         include RangeHelp
 
         MSG = 'Methods should be sorted in alphabetical order within their section' \
@@ -202,17 +202,33 @@ module RuboCop
           processed_source.comment_config.cop_enabled_at_line?(self, node.first_line)
         end
 
-        def end_pos_with_comments(node) # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        def end_pos_with_comments(node)
           range = node.source_range
           last_line = @processed_source.buffer.source_line(range.last_line)
-          end_position = range.end_pos + last_line.length - range.last_column
+          end_of_last_line = range.end_pos + last_line.length - range.last_column
+          line_number = node.source_range.last_line
 
-          if node.source_range.last_line == @processed_source.lines.count
-            end_position
-          else
-            end_position + 1
+          if line_number != @processed_source.lines.count
+            end_of_last_line += 1 # account for newline
           end
+
+          loop do
+            line_number += 1
+            break if line_number > @processed_source.lines.count
+            source_line = @processed_source.buffer.source_line(line_number)
+            break unless source_line.match?(/\s*#/)
+
+            adjustment = 0
+            if line_number != @processed_source.lines.count
+              adjustment = 1 # account for newline
+            end
+
+            end_of_last_line += source_line.length + adjustment
+          end
+          end_of_last_line
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         def message(method_name, following_method_name)
           format(MSG,
