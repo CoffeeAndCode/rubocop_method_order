@@ -11,7 +11,10 @@ Rake::TestTask.new(:test) do |t|
 end
 RuboCop::RakeTask.new
 
-Rake::Task['release'].enhance do
+task default: %i[test rubocop]
+
+desc 'Generate checksum files for current gem version.'
+task :checksum do |_task|
   require 'digest/sha2'
   require_relative './lib/rubocop_method_order/version'
 
@@ -25,5 +28,3 @@ Rake::Task['release'].enhance do
   checksum_path = "checksums/rubocop_method_order-#{RuboCopMethodOrder.gem_version}.gem.sha512"
   File.open(checksum_path, 'w') { |file| file.write(checksum) }
 end
-
-task default: %i[test rubocop]

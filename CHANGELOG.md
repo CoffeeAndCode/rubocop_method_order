@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 * Tie in Travis-CI for testing.
+* New `bin/release` script to make sure tests are ran before release.
 
 ### Fixed
 

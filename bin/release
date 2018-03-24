@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+bundle exec rake
+bundle exec rake release
+bundle exec rake checksum
