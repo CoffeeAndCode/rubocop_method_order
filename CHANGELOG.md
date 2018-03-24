@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 * Include comments immediately following a method definition when auto-correcting.
+* Correct source range calculation if looping over start or end of file.
 
 ## [0.2.1] - 2018-03-22
 

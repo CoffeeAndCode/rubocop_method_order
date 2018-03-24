@@ -5,9 +5,12 @@ def apple
   puts 'I love apples.'
 end
 
+# Method before hello.
 def hello
 end
+# Comment following hello.
 
 # Comment above initialize method in Ruby file
 def initialize
 end
+# Comment following the method.

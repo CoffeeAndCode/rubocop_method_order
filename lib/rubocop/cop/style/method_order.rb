@@ -172,6 +172,7 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/MethodLength
         def begin_pos_with_comments(node)
           range = node.source_range
           begin_of_first_line = range.begin_pos - range.column
@@ -179,13 +180,15 @@ module RuboCop
 
           loop do
             line_number -= 1
+            break if line_number <= 0
             source_line = @processed_source.buffer.source_line(line_number)
             break unless source_line.match?(/\s*#/)
 
-            begin_of_first_line -= source_line.length + 1 # account for \n char
+            begin_of_first_line -= (source_line.length + 1) # account for \n char
           end
           begin_of_first_line
         end
+        # rubocop:enable Metrics/MethodLength
 
         def check_nodes
           @method_collector.nodes_by_scope.values.each do |method_collection|
