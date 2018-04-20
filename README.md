@@ -153,9 +153,7 @@ the following:
 * push git commits and tags
 * push the `.gem` file to [rubygems.org][2]
 * create checksums of new version
-
-New checksum will be generated for the latest gem version which should
-be added to the `master` branch.
+* create new git commit that adds new checksum files to the repo
 
 ## Contributing
 

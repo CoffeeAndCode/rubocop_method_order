@@ -18,13 +18,17 @@ task :checksum do |_task|
   require 'digest/sha2'
   require_relative './lib/rubocop_method_order/version'
 
-  built_gem_path = "pkg/rubocop_method_order-#{RuboCopMethodOrder.gem_version}.gem"
+  gem_filename = "rubocop_method_order-#{RuboCopMethodOrder.gem_version}.gem"
+  built_gem_path = "pkg/#{gem_filename}"
 
   checksum = Digest::SHA256.new.hexdigest(File.read(built_gem_path))
-  checksum_path = "checksums/rubocop_method_order-#{RuboCopMethodOrder.gem_version}.gem.sha256"
+  checksum_path = "checksums/#{gem_filename}.sha256"
   File.open(checksum_path, 'w') { |file| file.write(checksum) }
 
   checksum = Digest::SHA512.new.hexdigest(File.read(built_gem_path))
-  checksum_path = "checksums/rubocop_method_order-#{RuboCopMethodOrder.gem_version}.gem.sha512"
+  checksum_path = "checksums/#{gem_filename}.sha512"
   File.open(checksum_path, 'w') { |file| file.write(checksum) }
+
+  `git add checksums/#{gem_filename}*`
+  `git commit -m 'Add checksums for v#{RuboCopMethodOrder.gem_version}'`
 end

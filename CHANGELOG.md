@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [unreleased]
 
+### Added
+
+* Add git commit with checksums as part of release task.
+
 ## [0.3.0] - 2018-04-20
 
 ### Added
