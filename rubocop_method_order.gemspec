@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
     spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
   end
 
-  spec.add_runtime_dependency 'rubocop', '~> 0.53'
+  spec.add_runtime_dependency 'rubocop', '>= 0.53', '< 2.0'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'minitest', '~> 5.0'
